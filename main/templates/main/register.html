@@ -1,0 +1,17 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+<form action="{% url 'register' %}" method="post">
+  {% csrf_token %}
+  <label for="first_name">First Name</label>
+    <input id="first_name" type="text" name="first_name" maxlength="20" required>
+    <label for="last_name">Last Name</label>
+    <input id="last_name" type="text" name="last_name" maxlength="20" required>
+  <label for="username">Username</label>
+    <input id="username" type="text" name="username" maxlength="20" required>
+  <label for="password">Password</label>
+    <input id="password" type="password" name="password" maxlength="30" required>
+  <input type="submit" value="Become member">
+</form>
+
+{% endblock content %}
