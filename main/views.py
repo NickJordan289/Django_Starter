@@ -19,6 +19,8 @@ def home(request):
 def login(request):
     if request.user.is_authenticated:
         return redirect(request.META.get('HTTP_REFERER')) # already logged in
+        messages.add_message(request, messages.INFO, 'Already logged in.')
+
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -27,8 +29,10 @@ def login(request):
             user=authenticate(request, username=username, password=password)
             if user is not None:
                 dj_login(request, user)
+                messages.add_message(request, messages.SUCCESS, f'Logged in as {user.get_full_name()}')
             else:
                 return redirect('login') # try again
+                messages.add_message(request, messages.INFO, 'Failed to authenticate.')
     else:
         form = LoginForm()
     return render(request, 'main/login.html', {'form': form, 'current_user' : request.user})
@@ -37,6 +41,7 @@ def login(request):
 def logout(request):
     if request.user.is_authenticated:
         dj_logout(request)
+        messages.add_message(request, messages.SUCCESS, 'Logged out.')
     return redirect(request.META.get('HTTP_REFERER'))
 
 
@@ -56,7 +61,8 @@ def register(request):
 
             new_user = UserExtras(user=new_base_user)
             new_user.save()
-
+            
+            messages.add_message(request, messages.SUCCESS, 'Registration Successful.')
             return redirect('login')
     else:
         form = RegisterForm()
@@ -66,5 +72,7 @@ def register(request):
 def profile(request):
     if not request.user.is_authenticated:
         return redirect('home')
+        messages.add_message(request, messages.INFO, 'Please login before doing that.')
+
     user_extra = UserExtras.objects.get(user=request.user)
     return render(request, 'main/profile.html', {'current_user': request.user, 'user_extras': user_extra})
