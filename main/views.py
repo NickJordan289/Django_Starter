@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.contrib import messages
 from django.contrib.auth import logout as dj_logout
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as dj_login
@@ -11,6 +12,7 @@ from .forms import *
 
 
 def home(request):
+    messages.add_message(request, messages.INFO, 'Sample Message')
     return render(request, 'main/home.html', {'current_user' : request.user})
 
 
